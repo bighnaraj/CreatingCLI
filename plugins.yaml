@@ -1,0 +1,15 @@
+"BOOTSTRAP":
+  "flavor": "ubuntu"
+  "repos":
+  - "name": "ubuntu"
+    "priority": "1001"
+    "section": "main"
+    "suite": "trusty"
+    "type": "deb"
+    "uri": "http://autolocal.com/ubuntu/"
+  - "name": "ubuntu-deb"
+    "priority": "1001"
+    "section": "main"
+    "suite": "trusty-secure"
+    "type": "deb"
+    "uri": "http://autolocal.com/ubuntu/deb/"

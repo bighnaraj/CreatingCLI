@@ -1,0 +1,39 @@
+machines:
+  - rack_name: r1
+    mc_name: <name_of_machine>
+    network:
+    - pxe:
+        start: <ip>
+        end: <ip>
+        gateway: <ip>
+    - public:
+        start: <ip>
+        end: <ip>
+        gateway: <ip>
+    - storage:
+        start: <ip>
+        end: <ip>
+        gateway: <ip>
+    - mgmt:
+        start: <ip>
+        end: <ip>
+        gateway: <ip>
+  - rack_name: r2
+    mc_name: <name_of_machine>
+    network:
+    - pxe:
+        start: <ip>
+        end: <ip>
+        gateway: <ip>
+    - public:
+        start: <ip>
+        end: <ip>
+        gateway: <ip>
+    - storage:
+        start: <ip>
+        end: <ip>
+        gateway: <ip>
+    - mgmt:
+        start: <ip>
+        end: <ip>
+        gateway: <ip>
