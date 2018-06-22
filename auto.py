@@ -1,4 +1,5 @@
 import click 
+import yaml
 
 @click.group(invoke_without_command=True)
 @click.pass_context
@@ -12,6 +13,13 @@ def cli(ctx):
 @click.argument('filename')
 def gen_sources(filename):
     click.echo('The subcommand gen_sources reads %s' %filename)
+    with open("filename") as f:
+        yaml_data = yaml.load(f)
+    with open("source.list","w") as f:
+        for item in yaml_data['BOOTSTRAP']['repos']:
+            input = item['type']+" "+item['uri']+" "+item['suite']+" "+item['section']
+            f.write(input+"\n")
+
 
 @cli.command()
 def gen_nodes():
