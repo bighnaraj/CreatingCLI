@@ -1,4 +1,5 @@
 import click 
+import pandas
 import yaml
 
 @click.group(invoke_without_command=True)
@@ -10,10 +11,10 @@ def cli(ctx):
         click.echo('invoking subcommand %s' % ctx.invoked_subcommand)
 
 @cli.command()
-@click.argument('filename')
-def gen_sources(filename):
-    click.echo('The subcommand gen_sources reads %s' %filename)
-    with open("filename") as f:
+@click.argument('pluginsfile')
+def gen_sources(pluginsfile):
+    click.echo('The subcommand gen_sources reads %s' %pluginsfile)
+    with open(pluginsfile) as f:
         yaml_data = yaml.load(f)
     with open("source.list","w") as f:
         for item in yaml_data['BOOTSTRAP']['repos']:
@@ -22,8 +23,10 @@ def gen_sources(filename):
 
 
 @cli.command()
-def gen_nodes():
-    click.echo('The subcommand gen_nodes')
+@click.argument('rackfile')
+def gen_nodes(rackfile):
+    click.echo('The subcommand gen_nodes reads %s' %rackfile)
+    racks_data = pandas.read_csv(rackfile)
 
 @cli.command()
 def convert():
