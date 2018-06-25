@@ -31,6 +31,21 @@ def gen_sources(pluginsfile):
 def gen_nodes(rackfile):
     click.echo('The subcommand gen_nodes reads %s' %rackfile)
     racks_data = pandas.read_csv(rackfile)
+    
+    with open("sample.yaml","w") as outfile:
+        list_dictionary = []
+        for i in range(len(racks_data)):
+            dictionary_yaml = dict(racks_data.ix[i])
+            temp = {}
+            temp['rack_name'] = dictionary_yaml['name']
+            temp['mc_name'] = 'm'+ str(i)
+            temp['network'] = {'pxe':str.strip(dictionary_yaml[' pxe']),'public':str.strip(dictionary_yaml[' public']),
+                               'storage':str.strip(dictionary_yaml[' storage']),'mgmt':str.strip(dictionary_yaml[' mgmt'])}
+            list_dictionary.append(temp.copy())
+
+    updated_dictionary['machines'] = list_dictionary
+    yaml.dump(updated_dictionary,outfile,default_flow_style=False)
+
 
 @cli.command()
 def convert():
