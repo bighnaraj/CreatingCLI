@@ -1,8 +1,9 @@
-###########
+#This file is for CLI "auto" which accepts two subcommands "gen_sources" and "gen_nodes"
 
 import click 
 import pandas
 import yaml
+from click.testing import CliRunner
 
 @click.group(invoke_without_command=True)
 @click.pass_context
@@ -22,6 +23,7 @@ def gen_sources(pluginsfile):
         for item in yaml_data['BOOTSTRAP']['repos']:
             input = item['type']+" "+item['uri']+" "+item['suite']+" "+item['section']
             f.write(input+"\n")
+    
 
 
 @cli.command()
@@ -33,4 +35,5 @@ def gen_nodes(rackfile):
 @cli.command()
 def convert():
     click.echo('The subcommand convert')
+
 
