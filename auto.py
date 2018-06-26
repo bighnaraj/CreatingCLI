@@ -18,7 +18,7 @@ def cli(ctx):
 def gen_sources(pluginsfile):
     try:
         if ".yaml" in pluginsfile:
-            click.echo('The subcommand gen_sources reads %s' %pluginsfile)
+            click.echo("The subcommand gen_sources reads '%s'" %pluginsfile)
             with open(pluginsfile) as f:
                 yaml_data = yaml.load(f)
                 with open("source.list","w") as f:
@@ -27,34 +27,35 @@ def gen_sources(pluginsfile):
                         f.write(write_data+"\n")
 
         else:
-            click.echo("%s is not a valid yaml file" %pluginsfile)
+            click.echo("'%s' is not a valid yaml file" %pluginsfile)
     except FileNotFoundError as e:
-        click.echo("Wrong File Name Entered. File \'%s\' does not exist" %pluginsfile)   
-
+        click.echo("Wrong File Name Entered. File '%s' does not exist" %pluginsfile)   
 
 @cli.command()
 @click.argument('rackfile')
 def gen_nodes(rackfile):
-    click.echo('The subcommand gen_nodes reads %s' %rackfile)
-    racks_data = pandas.read_csv(rackfile)
-    
-    with open("sample.yaml","w") as outfile:
-        list_dictionary = []
-        for i in range(len(racks_data)):
-            dictionary_yaml = dict(racks_data.ix[i])
-            temp = {}
-            temp['rack_name'] = dictionary_yaml['name']
-            temp['mc_name'] = 'm'+ str(i)
-            temp['network'] = {'pxe':str.strip(dictionary_yaml[' pxe']),'public':str.strip(dictionary_yaml[' public']),
-                               'storage':str.strip(dictionary_yaml[' storage']),'mgmt':str.strip(dictionary_yaml[' mgmt'])}
-            list_dictionary.append(temp.copy())
+    try:
+        if ".csv" in rackfile:
+            click.echo("The subcommand gen_nodes reads '%s'" %rackfile)
+            racks_data = pandas.read_csv(rackfile)
+            with open("machines.yaml","w") as outfile:
+                list_dictionary = []
+                for i in range(len(racks_data)):
+                    dictionary_yaml = dict(racks_data.ix[i])
+                    temp = {}
+                    temp['rack_name'] = dictionary_yaml['name']
+                    temp['mc_name'] = 'm'+ str(i)
+                    temp['network'] = {'pxe':str.strip(dictionary_yaml[' pxe']),'public':str.strip(dictionary_yaml[' public']),
+                                       'storage':str.strip(dictionary_yaml[' storage']),'mgmt':str.strip(dictionary_yaml[' mgmt'])}
+                    list_dictionary.append(temp.copy())
 
-    updated_dictionary['machines'] = list_dictionary
-    yaml.dump(updated_dictionary,outfile,default_flow_style=False)
-
+                updated_dictionary['machines'] = list_dictionary
+                yaml.dump(updated_dictionary,outfile,default_flow_style=False)
+        else:
+            click.echo("'%s' is not a valid csv file" %rackfile)
+    except FileNotFoundError as e:
+        click.echo("Wrong File Name Entered. File '%s' does not exist" %rackfile)
 
 @cli.command()
 def convert():
     click.echo('The subcommand convert')
-
-
