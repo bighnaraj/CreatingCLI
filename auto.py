@@ -16,20 +16,20 @@ def cli(ctx):
 @cli.command()
 @click.argument('pluginsfile')
 def gen_sources(pluginsfile):
-    click.echo('The subcommand gen_sources reads %s' %pluginsfile)
     try:
-        if ".yaml" in filename:
+        if ".yaml" in pluginsfile:
+            click.echo('The subcommand gen_sources reads %s' %pluginsfile)
             with open(pluginsfile) as f:
                 yaml_data = yaml.load(f)
                 with open("source.list","w") as f:
-                for item in yaml_data['BOOTSTRAP']['repos']:
-                    write_data = item['type']+" "+item['uri']+" "+item['suite']+" "+item['section']
-                    f.write(write_data+"\n")
+                    for item in yaml_data['BOOTSTRAP']['repos']:
+                        write_data = item['type']+" "+item['uri']+" "+item['suite']+" "+item['section']
+                        f.write(write_data+"\n")
 
         else:
-            click.echo("\'%s\' is not a valid yaml file" %filename)
+            click.echo("%s is not a valid yaml file" %pluginsfile)
     except FileNotFoundError as e:
-        click.echo("Wrong File Name Entered. File \'%s\' does not exist" %filename)   
+        click.echo("Wrong File Name Entered. File \'%s\' does not exist" %pluginsfile)   
 
 
 @cli.command()
