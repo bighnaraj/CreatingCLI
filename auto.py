@@ -1,17 +1,25 @@
 #This file is for CLI "auto" which accepts two subcommands "gen_sources" and "gen_nodes"
 
 import click 
+import logging
 import pandas
 import yaml
 from click.testing import CliRunner
+
+FORMAT = '%(asctime)-15s %(pathname)s %(clientip)s %(user)-8s %(levelname)s %(message)s'
+logging.basicConfig(format=FORMAT,filename='myapp.log', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+d = {'clientip': '172.16.54.106', 'user': 'cli'}
+
 
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
     if ctx.invoked_subcommand is None:
-        click.echo('please enter a subcommand')
+        click.echo("Please enter a subcommand")
+        logger.debug("Wrong subcommand entered.")
     else:
-        click.echo('invoking subcommand %s' % ctx.invoked_subcommand)
+        click.echo("invoking subcommand %s" % ctx.invoked_subcommand)
 
 @cli.command()
 @click.argument('pluginsfile')
@@ -19,17 +27,21 @@ def gen_sources(pluginsfile):
     try:
         if ".yaml" in pluginsfile:
             click.echo("The subcommand gen_sources reads '%s'" %pluginsfile)
+            logger.debug("'%s' file preparation is started from '%s' file")
             with open(pluginsfile) as f:
                 yaml_data = yaml.load(f)
                 with open("source.list","w") as f:
                     for item in yaml_data['BOOTSTRAP']['repos']:
                         write_data = item['type']+" "+item['uri']+" "+item['suite']+" "+item['section']
                         f.write(write_data+"\n")
+            logger.info("'%s' file is prepared from '%s' file" %('source.list',pluginsfile))
 
         else:
             click.echo("'%s' is not a valid yaml file" %pluginsfile)
+            logger.error("'%s' is an invalid yaml file")
     except FileNotFoundError as e:
         click.echo("Wrong File Name Entered. File '%s' does not exist" %pluginsfile)   
+        logger.error("'%s' file does not exist")
 
 @cli.command()
 @click.argument('rackfile')
@@ -37,6 +49,7 @@ def gen_nodes(rackfile):
     try:
         if ".csv" in rackfile:
             click.echo("The subcommand gen_nodes reads '%s'" %rackfile)
+            logger.debug("'%s' file preparation is started from '%s' file")
             racks_data = pandas.read_csv(rackfile)
             with open("machines.yaml","w") as outfile:
                 list_dictionary = []
@@ -80,8 +93,10 @@ def gen_nodes(rackfile):
                 yaml.dump(updated_dictionary,outfile,default_flow_style=False)
         else:
             click.echo("'%s' is not a valid csv file" %rackfile)
+            logger.error("'%s' is an invalid csv file")
     except FileNotFoundError as e:
         click.echo("Wrong File Name Entered. File '%s' does not exist" %rackfile)
+        logger.error("'%s' file does not exist")
 
 @cli.command()
 def convert():
